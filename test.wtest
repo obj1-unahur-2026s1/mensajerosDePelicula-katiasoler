@@ -1,0 +1,54 @@
+import mensajeros.*
+import paquetes.*
+import vehiculos.*
+import destinos.*
+import empresaDeMensajeria.*
+
+describe "Test primera parte" {
+
+  test "Roberto (90kg) puede llevar un paquete que está pago en un camión que tiene un acoplado a brooklyn" {
+    paquete.registrarPago()
+    roberto.vehiculo(camion)
+    roberto.cambiarPeso(90)
+    camion.cambiarCantidadDeAcoplados(1)
+    paquete.destino(puenteDeBrooklyn)
+    assert.that(paquete.puedeEntregarse(roberto))
+  }
+  test "Que roberto (90kg) no puede llevar un paquete que está pago en un camión que tiene un acoplado a la matrix"{
+    paquete.registrarPago()
+    roberto.vehiculo(camion)
+    roberto.cambiarPeso(90)
+    camion.cambiarCantidadDeAcoplados(1)
+    paquete.destino(laMatrix)
+    assert.notThat(paquete.puedeEntregarse(roberto))
+  }
+  test "Que neo con crédito no puede llevar un paquete que no está pago a la matrix."{
+    paquete.rechazarPago()
+    neo.cargarCredito()
+    paquete.destino(laMatrix)
+    assert.notThat(paquete.puedeEntregarse(neo))
+  }
+}
+describe "Test segunda parte" {
+  test "contratar un mensajero" {
+    empresa.contratarMensajero(roberto)
+    assert.that(empresa.mensajeros().contains(roberto))
+  }
+  test "despedir un mensajero, luego de contratarlo"{
+    empresa.contratarMensajero(roberto)
+    empresa.despedirMensajero(roberto)
+    assert.notThat(empresa.mensajeros().contains(roberto))
+  }
+  test "despedir todos los mensajeros (luego de contratar 2)"{
+    empresa.contratarMensajero(roberto)
+    empresa.contratarMensajero(neo)
+    empresa.despedirTodosLosMensajeros()
+    assert.that(empresa.mensajeros().isEmpty())
+  }
+  test "Saber el peso del último mensajero de la empresa.Luego de contratar a neo y roberto"{
+    empresa.contratarMensajero(neo)
+    empresa.contratarMensajero(roberto)
+    assert.equals(90, empresa.pesoUltimoMensajero())
+  }
+}
+
